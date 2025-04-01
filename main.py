@@ -328,8 +328,21 @@ class AC3:
         partial assignment; the method returns False otherwise. 
         """
         # Implement here the domain-dependent version of AC3.
-        pass
+        while Q:
+            var = Q.pop()
+        i, j = var
+        # Methods return tuple of (vars, True/False)
+        row = self.remove_domain_row(grid, i, j)
+        col = self.remove_domain_column(grid, i, j)
+        unit = self.remove_domain_unit(grid, i, j) 
 
+        if row[1] and col[1] and unit[1]:
+            # If the problem can be solved with AC3, add vars to Q whose domain size is now 1
+            Q.append(row[0], col[0], unit[0])
+            return False
+        else:
+            # If the problem cannot be solved with AC3
+            return True
 class Backtracking:
     """
     Class that implements backtracking search for solving CSPs. 
