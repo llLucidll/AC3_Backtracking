@@ -197,19 +197,13 @@ class FirstAvailable():
     Naïve method for selecting variables; simply returns the first variable encountered whose domain is larger than one.
     """
     def select_variable(self, grid):
-        # Implement here the first available heuristic
-        """
-        Returns the index of the first variable in the table whose value is greater than 1
-        """
         width = grid.get_width()
         domain = grid.get_cells()
-
         for i in range(width):
             for j in range(width):
-                if len(domain[i][j]) == 1:
-                    if int(domain[i][j]) > 1:
-                        index = (i,j)
-                        return index
+                # so check if the domain has more than one value.
+                if len(domain[i][j]) > 1:
+                    return (i, j)
         return None
 
 class MRV():
@@ -222,7 +216,7 @@ class MRV():
         """
         width = grid.get_width()
         domain = grid.get_cells()
-        low = 9
+        low = 10
         res = None
         for i in range(width):
             for j in range(width):
@@ -459,8 +453,9 @@ for p in problems:
     back = Backtracking()
     mrv = MRV()
     firsta = FirstAvailable()
-    solution = back.search(copy_g, firsta)
+    solution = back.search(copy_g, mrv)
     if solution:
+        print("Solved easy instance")
         solution.print()
     else:
         print("Failed to solve")
