@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import collections
+import time 
 
 class PlotResults:
     """
@@ -387,7 +388,7 @@ class Backtracking:
                 q.append((i,j))
                 if ac.consistency(copy_grid, q):
                     continue
-                
+
                 result = self.ac_search(copy_grid, var_selector)
                 if result is not None:
                     return result
@@ -474,6 +475,8 @@ for p in problems:
     # Checking hard instance with inference based backtracking
     file = open('top95.txt', 'r')
     problems = file.readlines()
+    running_time_mrv = []
+    running_time_fa = []
 
     for p in problems:
         # Read problem from string
@@ -489,36 +492,39 @@ for p in problems:
         g.print_domains()
         print()
 
-        # Iterate over domain values
-        for i in range(g.get_width()):
-            for j in range(g.get_width()):
-
-                print('Domain of ', i, j, ': ', g.get_cells()[i][j])
-
-                for d in g.get_cells()[i][j]:
-                    print(d, end=' ')
-                print()
 
         # # Make a copy of a grid
-        copy_g = g.copy()
-
-        print('Copy (copy_g): ')
-        copy_g.print()
-        print()
-
-        print('Original (g): ')
-        g.print()
-        print()
+        copy_g1 = g.copy()
+        copy_g2 = g.copy()
 
         # Preprocessing before running search
-        ac.pre_process_consistency(copy_g)
-        solution = back.ac_search(copy_g, mrv)
+        start = time.perf_counter()
+        ac.pre_process_consistency(copy_g1)
+        solution = back.ac_search(copy_g1, firsta)
+        end = time.perf_counter()
+        timed = end - start
+        running_time_fa.append(timed)
+
         if solution:
-            print("Solved hard instance")
+            print("Solved hard instance with FA")
             solution.print()
         else:
             print("Failed to solve instance")
 
+        start = time.perf_counter()
+        ac.pre_process_consistency(copy_g2)
+        solution = back.ac_search(copy_g2, mrv)
+        end = time.perf_counter()
+        timed = end - start
+        running_time_mrv.append(timed)
+        if solution:
+            print("Solved hard instance with MRV")
+            solution.print()
+        else:
+            print("Failed to solve instance")
+    
+    plotter = PlotResults()
+    plotter.plot_results(running_time_mrv, running_time_fa, "Running Time (MRV)", "Running Time (FA)", "running_time")
 
     
 
