@@ -207,7 +207,7 @@ class FirstAvailable():
         for i in range(width):
             for j in range(width):
                 if len(domain[i][j]) == 1:
-                    if int(grid[i][j]) > 1:
+                    if int(domain[i][j]) > 1:
                         index = (i,j)
                         return index
         return None
